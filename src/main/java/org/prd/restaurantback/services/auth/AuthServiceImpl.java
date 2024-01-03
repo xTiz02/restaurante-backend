@@ -1,5 +1,6 @@
 package org.prd.restaurantback.services.auth;
 
+import jakarta.annotation.PostConstruct;
 import org.prd.restaurantback.dtos.SignupRequest;
 import org.prd.restaurantback.dtos.UserDto;
 import org.prd.restaurantback.entities.User;
@@ -17,6 +18,19 @@ public class AuthServiceImpl implements AuthService{
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    //@PostConstruct se ejecuta despues de que se crea el bean en el contenedor de spring y despues de que se inyecten las dependencias
+    public void createAdminAccount() {
+        User admin = userRepository.findByRole(UserRole.ADMIN);
+        if(admin == null){
+           User user = new User();
+                user.setName("admin");
+                user.setEmail("admin@gmail.com");
+                user.setPassword(bCryptPasswordEncoder.encode("admin"));
+                user.setRole(UserRole.ADMIN);
+                userRepository.save(user);
+        }
+    }
     @Override
     public UserDto createUser(SignupRequest signupRequest) {
         User user = new User();
