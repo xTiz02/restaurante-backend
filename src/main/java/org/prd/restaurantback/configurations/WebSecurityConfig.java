@@ -1,9 +1,14 @@
 package org.prd.restaurantback.configurations;
 
 import org.prd.restaurantback.enums.UserRole;
+import org.prd.restaurantback.services.auth.jwt.JwtUtil;
+import org.prd.restaurantback.services.auth.jwt.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -16,11 +21,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity//habilita la seguridad a nivel de metodo
 public class WebSecurityConfig {
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
+
+
 
 
     @Bean
@@ -32,7 +50,8 @@ public class WebSecurityConfig {
                     authConfig.requestMatchers("/api/admin/**").hasAnyAuthority(UserRole.ADMIN.name());
                     //authConfig.requestMatchers(HttpMethod.GET,"/api/auth/login").permitAll();
                     authConfig.anyRequest().authenticated();
-                });
+                }).addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class)
+                ;
         /*http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest()
                         .authenticated())
                 .httpBasic(withDefaults())//con esto se puede hacer la autenticacion basica
@@ -48,6 +67,18 @@ public class WebSecurityConfig {
 
 
     }
+    /*@Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }*/
+
+    public JwtAuthorizationFilter customFilter() throws Exception {
+        JwtAuthorizationFilter authFilter = new JwtAuthorizationFilter(authenticationConfiguration.getAuthenticationManager(), jwtUtil);
+        return authFilter;
+    }
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -62,9 +93,10 @@ public class WebSecurityConfig {
         return new InMemoryUserDetailsManager(user);
     }*/
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+//
+//        return configuration.getAuthenticationManager();
+//    }
 
 }

@@ -30,7 +30,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    private final AuthenticationManager authenticationManager;
+//    private final AuthenticationManager authenticationManager;
 
     private final JwtUtil jwtService;
     private final UserRepository userRepository;
@@ -39,9 +39,9 @@ public class AuthController {
     @Qualifier("userDetailsServiceImpl")
     private UserDetailsService userDetailsService;
 
-    public AuthController(AuthService authService, AuthenticationManager authenticationManager, JwtUtil jwtService, UserRepository userRepository) {
+    public AuthController(AuthService authService, JwtUtil jwtService, UserRepository userRepository) {
         this.authService = authService;
-        this.authenticationManager = authenticationManager;
+
         this.jwtService = jwtService;
         this.userRepository = userRepository;
     }
@@ -65,8 +65,8 @@ public class AuthController {
     /*@PostMapping("/login")
     public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authentication,HttpServletResponse response) throws Exception {
         try{
-            System.out.println(authentication.getEmail());
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authentication.getEmail(), authentication.getPassword()));
+            System.out.println(authentication.getUsername());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authentication.getUsername(), authentication.getPassword()));
             //authenticationManager autentica el usuario y contraseña con el userDetailsService
         }catch (BadCredentialsException e){
             throw new BadCredentialsException("Incorrect username or password", e);
@@ -75,7 +75,7 @@ public class AuthController {
             return null;
         }
         System.out.println("llego");
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getEmail());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getUsername());
 
         final String jwt = jwtService.generateToken(userDetails.getUsername());
         Optional<User> optionalUser = userRepository.findFirstByEmail(userDetails.getUsername());

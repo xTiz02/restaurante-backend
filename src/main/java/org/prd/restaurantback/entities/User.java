@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -57,16 +57,16 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-
+    public String getPassword() {
+        return password;
+    }
     //implementing UserDetails methods
-    @Override
+   /* @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    public String getPassword() {
-        return password;
-    }
+
 
     @Override
     public String getUsername() {
@@ -92,5 +92,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
+*/
 }
