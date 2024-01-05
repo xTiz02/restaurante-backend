@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                     //authConfig.requestMatchers(HttpMethod.GET,"/api/auth/login").permitAll();
                     authConfig.anyRequest().authenticated();
                 }).addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class)
-                ;
+                .addFilterBefore(customFilter2(), UsernamePasswordAuthenticationFilter.class);
         /*http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest()
                         .authenticated())
                 .httpBasic(withDefaults())//con esto se puede hacer la autenticacion basica
@@ -77,6 +77,10 @@ public class WebSecurityConfig {
 
     public JwtAuthorizationFilter customFilter() throws Exception {
         JwtAuthorizationFilter authFilter = new JwtAuthorizationFilter(authenticationConfiguration.getAuthenticationManager(), jwtUtil);
+        return authFilter;
+    }
+    public JwtAuthenticationFilter customFilter2() throws Exception {
+        JwtAuthenticationFilter authFilter = new JwtAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(),jwtUtil);
         return authFilter;
     }
     @Bean

@@ -6,6 +6,7 @@ import org.prd.restaurantback.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService{
@@ -26,8 +27,17 @@ public class AdminServiceImpl implements AdminService{
         if (cat != null) {
             CategoryDto catDto = new CategoryDto();
             catDto.setId(cat.getId());
+            catDto.setName(cat.getName());
+            catDto.setDescription(cat.getDescription());
+            catDto.setReturnedImg(cat.getImg());
             return catDto;
         }
         return null;
+    }
+
+    @Override
+    public List<CategoryDto> getAllCategories() {
+        List<Category> categoryList = categoryRepository.findAll();
+        return categoryList.stream().map(category -> category.getCategoryDto()).toList();
     }
 }

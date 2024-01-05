@@ -1,6 +1,7 @@
 package org.prd.restaurantback.entities;
 
 import jakarta.persistence.*;
+import org.prd.restaurantback.dtos.CategoryDto;
 
 @Entity
 @Table (name = "categories")
@@ -54,5 +55,14 @@ public class Category {
 
     public void setImg(byte[] img) {
         this.img = img;
+    }
+
+    public CategoryDto getCategoryDto() {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(this.id);
+        categoryDto.setName(this.name);
+        categoryDto.setDescription(this.description);
+        categoryDto.setReturnedImg(this.img);
+        return categoryDto;
     }
 }

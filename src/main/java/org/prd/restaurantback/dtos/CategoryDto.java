@@ -63,4 +63,6 @@ public class CategoryDto {
     public void setReturnedImg(byte[] returnedImg) {
         this.returnedImg = returnedImg;
     }
+
+
 }
