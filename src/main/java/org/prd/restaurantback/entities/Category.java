@@ -12,8 +12,9 @@ public class Category {
     private String name;
     private String description;
     @Lob
-    @Column(columnDefinition = "longblob")
+    @Column(columnDefinition = "longblob") //columDefinition = "longblob" es para que se guarde en la base de datos como un blob
     private byte[] img;
+
 
     public Category(Long id, String name, String description, byte[] img) {
         this.id = id;
